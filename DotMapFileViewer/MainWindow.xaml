@@ -1,0 +1,90 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DotMapFileViewer"
+        x:Class="DotMapFileViewer.MainWindow"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="493" Width="833" Drop="Window_Drop" PreviewDragOver="Window_PreviewDragOver" AllowDrop="True">
+    <Window.DataContext>
+        <local:MapFileInfoViewModel/>
+    </Window.DataContext>
+    <Window.Resources>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <DockPanel Grid.Row="0">
+            <Button Content="📁"></Button>
+            <TextBox Text="{Binding FilePath}"/>
+        </DockPanel>
+        <StackPanel Orientation="Horizontal" Height="26" Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" Grid.Row="1">
+            <Label Content="Load Address" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"/>
+            <TextBox MinWidth="200" Margin="1,1,1,1" Text="{Binding Path=PreferredLoadAddress, StringFormat=0x{0:X8}}"/>
+            <Label Content="Timestamp" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"/>
+            <TextBox MinWidth="200" IsReadOnly="True" Margin="1,1,1,1" Text="{Binding Path=TimeStamp, StringFormat={}{0:O}, Mode=OneWay}" />
+            <CheckBox Name="Demangled" IsChecked="{Binding Demangled}" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
+                <TextBlock Text="Demangele" />
+            </CheckBox>
+        </StackPanel>
+        <DockPanel Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" MinHeight="100" Grid.Row="2">
+            <Label Content="Sections" HorizontalAlignment="Left" VerticalAlignment="Top" DockPanel.Dock="Left" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" AutomationProperties.IsRowHeader="True"/>
+            <ListView DockPanel.Dock="Bottom" ScrollViewer.HorizontalScrollBarVisibility="Auto" ItemsSource="{Binding Path=Sections}" FontFamily="Courier New">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Section" DisplayMemberBinding="{Binding Path=Section, StringFormat={}{0:X4}}" />
+                        <GridViewColumn Header="SectionStart" DisplayMemberBinding="{Binding Path=SectionStart, StringFormat={}{0:X8}}" />
+                        <GridViewColumn Header="Length(HEX)" DisplayMemberBinding="{Binding Path=Length, StringFormat={}{0:X4}}" />
+                        <GridViewColumn Header="Length" DisplayMemberBinding="{Binding Path=Length}" />
+                        <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Path=Name}"/>
+                        <GridViewColumn Header="Class" DisplayMemberBinding="{Binding Path=Class}"/>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </DockPanel>
+        <DockPanel Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" Visibility="Visible" MinHeight="100" Grid.Row="3">
+            <Label Content="Symbols" HorizontalAlignment="Left" VerticalAlignment="Top" DockPanel.Dock="Left" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" AutomationProperties.IsRowHeader="True"/>
+            <ListView DockPanel.Dock="Bottom" ScrollViewer.HorizontalScrollBarVisibility="Auto"  ItemsSource="{Binding Path=Symbols}" FontFamily="Courier New">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Section" DisplayMemberBinding="{Binding Path=Section}"/>
+                        <GridViewColumn Header="Offset" DisplayMemberBinding="{Binding Path=Offset, StringFormat={}{0:X8}}" Width="80"/>
+                        <GridViewColumn Header="Size(HEX)" DisplayMemberBinding="{Binding Path=Size, StringFormat={}{0:X4}}" Width="60"/>
+                        <GridViewColumn Header="Size" DisplayMemberBinding="{Binding Path=Size}" Width="60"/>
+                        <GridViewColumn Header="Mangled Name" DisplayMemberBinding="{Binding Path=MangledName}"/>
+                        <GridViewColumn Header="Demangled Name" DisplayMemberBinding="{Binding Path=DemangledName}"/>
+                        <GridViewColumn Header="Base+RVA" DisplayMemberBinding="{Binding Path=VirtualAddress, StringFormat={}{0:X8}}" Width="80"/>
+                        <GridViewColumn Header="Function" DisplayMemberBinding="{Binding Path=Function, Converter={x:Static local:BooleanToCheckMarkConverter.Instance}}"/>
+                        <GridViewColumn Header="Inline" DisplayMemberBinding="{Binding Path=Inline, Converter={x:Static local:BooleanToCheckMarkConverter.Instance}}"/>
+                        <GridViewColumn Header="Object Name" DisplayMemberBinding="{Binding Path=ObjectName}"/>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </DockPanel>
+        <DockPanel Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" Visibility="Visible" MinHeight="100" Grid.Row="4">
+            <Label Content="Static Symbols" HorizontalAlignment="Left" VerticalAlignment="Top" DockPanel.Dock="Left" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" AutomationProperties.IsRowHeader="True"/>
+            <ListView DockPanel.Dock="Bottom" ScrollViewer.HorizontalScrollBarVisibility="Auto"  ItemsSource="{Binding Path=StaticSymbols}" FontFamily="Courier New">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Section" DisplayMemberBinding="{Binding Path=Section}"/>
+                        <GridViewColumn Header="Offset" DisplayMemberBinding="{Binding Path=Offset, StringFormat={}{0:X8}}" Width="80"/>
+                        <GridViewColumn Header="Size(HEX)" DisplayMemberBinding="{Binding Path=Size, StringFormat={}{0:X4}}" Width="60"/>
+                        <GridViewColumn Header="Size" DisplayMemberBinding="{Binding Path=Size}" Width="60"/>
+                        <GridViewColumn Header="Mangled Name" DisplayMemberBinding="{Binding Path=MangledName}"/>
+                        <GridViewColumn Header="Demangled Name" DisplayMemberBinding="{Binding Path=DemangledName}"/>
+                        <GridViewColumn Header="Base+RVA" DisplayMemberBinding="{Binding Path=VirtualAddress, StringFormat={}{0:X8}}" Width="80"/>
+                        <GridViewColumn Header="Function" DisplayMemberBinding="{Binding Path=Function, Converter={x:Static local:BooleanToCheckMarkConverter.Instance}}"/>
+                        <GridViewColumn Header="Inline" DisplayMemberBinding="{Binding Path=Inline, Converter={x:Static local:BooleanToCheckMarkConverter.Instance}}"/>
+                        <GridViewColumn Header="Object Name" DisplayMemberBinding="{Binding Path=ObjectName}"/>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </DockPanel>
+    </Grid>
+</Window>
